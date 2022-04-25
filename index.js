@@ -6,6 +6,8 @@ import createAccountsRouter from './src/accounts/routes';
 import db from './src/config/db';
 import createMoviesRouter from './src/movies/routes';
 import AccountsRepositoryMongo from './src/accounts/repositories/mongo/AccountRepository';
+import Authenticator from './src/accounts/security/bcrypt';
+import TokenManager from './src/accounts/security/jwt';
 
 dotenv.config();
 
@@ -15,7 +17,9 @@ const port = process.env.PORT;
 
 // const dependencies = buildDependencies();
 const dependencies = {
-  accountRepository : new AccountsRepositoryMongo()
+  accountRepository : new AccountsRepositoryMongo(),
+  authenticator: new Authenticator(),
+  tokenManager: new TokenManager()
 };
 
 //Application Middleware
