@@ -5,9 +5,9 @@ const buildDependencies = () => {
   };
 
   if (process.env.DATABASE_DIALECT === "in-memory") {
-    dependencies.accountsRepository = new AccountsRepositoryInMemory();
+    dependencies.accountRepository = new AccountsRepositoryInMemory();
   } else if (process.env.DATABASE_DIALECT === "mongo") {
-    throw new Error('Add Mongo Support');
+    dependencies.accountRepository = new AccountsRepositoryMongo();
   } else if (process.env.DATABASE_DIALECT === "mysql") {
     throw new Error('Add MySQL support');
   } else {

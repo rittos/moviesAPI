@@ -2,15 +2,25 @@ import dotenv from 'dotenv';
 import express from 'express';
 import moviesRouter from './src/movies';
 import createAccountsRouter from './src/accounts/routes';
-import dependencies from "./src/config/dependencies";
+// import dependencies from "./src/config/dependencies";
+import db from './src/config/db';
 import createMoviesRouter from './src/movies/routes';
+import AccountsRepositoryMongo from './src/accounts/repositories/mongo/AccountRepository';
 
 dotenv.config();
 
 const app = express();
-
+db.init();
 const port = process.env.PORT;
+
 // const dependencies = buildDependencies();
+const dependencies = {
+  accountRepository : new AccountsRepositoryMongo()
+};
+
+//Application Middleware
+app.use(express.json());
+app.get('/', (req, res) => { res.end('All Good!') });
 
 app.use('/api/movies', moviesRouter);
 app.use('/api/accounts', createAccountsRouter(dependencies));

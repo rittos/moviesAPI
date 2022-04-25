@@ -1,17 +1,17 @@
 import Account from '../entities/Account';
 
 export default {
-  registerAccount: async  (firstName, lastName, email, password, {accountsRepository}) => {
+  registerAccount: async  (firstName, lastName, email, password, {accountRepository}) => {
     const account = new Account(undefined, firstName, lastName, email, password);
-    return accountsRepository.persist(account);
+    return accountRepository.persist(account);
   },
-  getAccount: (accountId, {accountsRepository}) => {
-    return accountsRepository.get(accountId);
+  getAccount: (accountId, {accountRepository}) => {
+    return accountRepository.get(accountId);
   },
-  find: ({accountsRepository})=>{
-    return accountsRepository.find();
+  find: ({accountRepository})=>{
+    return accountRepository.find();
   },
-  findByEmail: (email, {accountsRepository})=>{
-    return accountsRepository.getByEmail(email);
+  findByEmail: (email, {accountRepository})=>{
+    return accountRepository.getByEmail(email);
   }
 };
