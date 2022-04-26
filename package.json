@@ -1,0 +1,39 @@
+{
+  "name": "moviesapi",
+  "version": "1.0.0",
+  "description": "movies app api's",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --exec babel-node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rittos/moviesAPI.git"
+  },
+  "author": "rittos",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rittos/moviesAPI/issues"
+  },
+  "homepage": "https://github.com/rittos/moviesAPI#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^10.1.0",
+    "babel-preset-env": "^1.7.0",
+    "eslint": "^8.14.0",
+    "eslint-plugin-react": "^7.29.4",
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "axios": "^0.27.0",
+    "bcryptjs": "^2.4.3",
+    "debug": "^4.3.4",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.3.1",
+    "passport": "^0.5.2",
+    "passport-jwt": "^4.0.0"
+  }
+}
