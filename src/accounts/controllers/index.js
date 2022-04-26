@@ -53,6 +53,27 @@ export default (dependencies) => {
         next(new Error(`Verification Failed ${err.message}`));
         }
     };
+    const addFavourite = async (request, response, next) => {
+        try {
+            const { movieId } = request.body;
+            const id = request.params.id;
+            // console.log(id);
+            const account = await accountService.addFavourite(id, movieId, dependencies);
+            response.status(200).json(account);
+        } catch (err) {
+            next(new Error(`Invalid Data ${err.message}`));
+        }
+    };
+    const getFavourites = async (request, response, next) => {
+        try {
+            const id = request.params.id;
+            
+            const favourites = await accountService.getFavourites(id, dependencies);
+            response.status(200).json(favourites);
+        } catch (err) {
+            next(new Error(`Invalid Data ${err.message}`));
+        }
+    };
 
 
     return {
@@ -60,6 +81,8 @@ export default (dependencies) => {
         getAccount,
         listAccounts,
         authenticateAccount,
-        verifyToken
+        verifyToken,
+        addFavourite,
+        getFavourites
     };
 };

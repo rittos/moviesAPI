@@ -27,12 +27,24 @@ export default {
     const token = tokenManager.generate({ email: account.email });
     return token;
   },
-  verifyToken:   async (token,{accountsRepository, tokenManager}) => {
+  verifyToken:   async (token,{accountRepository, tokenManager}) => {
     const decoded = await tokenManager.decode(token);
-    const user = await accountsRepository.getByEmail(decoded.email);
+    const user = await accountRepository.getByEmail(decoded.email);
     if (!user) {
         throw new Error('Bad token');
     }
     return user.email;
+  },
+  getFavourites: async (accountId, { accountRepository }) => {
+    const account = await accountRepository.get(accountId);
+    return account.favourites;
+  },
+  addFavourite: async (accountId, movieId, { accountRepository }) => {
+    console.log("mongo");
+    const account = await accountRepository.get(accountId);
+    console.log(account.email);
+    account.favourites.push(movieId);
+    return await accountRepository.merge(account);
+
   }
 };
