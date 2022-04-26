@@ -75,6 +75,16 @@ export default (dependencies) => {
         }
     };
 
+    const findByEmail = async (request, response, next) => {
+        //input
+        const emailId = request.params.id;
+        // Treatment
+        const account = await accountService.findByEmail(emailId, dependencies);
+        // const output = dependencies.accountsSerializer.serialize(account);
+        //output
+        response.status(200).json(account);
+    };
+
 
     return {
         createAccount,
@@ -83,6 +93,7 @@ export default (dependencies) => {
         authenticateAccount,
         verifyToken,
         addFavourite,
-        getFavourites
+        getFavourites,
+        findByEmail
     };
 };

@@ -21,7 +21,11 @@ const dependencies = {
   authenticator: new Authenticator(),
   tokenManager: new TokenManager()
 };
-
+const errorHandler1 = (err, req, res, next) => {
+  console.log('in error handler');
+  console.log(err);
+  res.status(500).end('something went wrong!');
+}
 //Application Middleware
 app.use(express.json());
 app.get('/', (req, res) => { res.end('All Good!') });
@@ -29,7 +33,7 @@ app.get('/', (req, res) => { res.end('All Good!') });
 app.use('/api/movies', moviesRouter);
 app.use('/api/accounts', createAccountsRouter(dependencies));
 app.use('/api/movies', createMoviesRouter(dependencies));
-
+app.use(errorHandler1);
 app.listen(port, () => {
   console.info(`Server running at ${port}`);
 });
