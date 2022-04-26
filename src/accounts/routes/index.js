@@ -24,7 +24,10 @@ const createRouter = (dependencies) => {
         .post(accountsController.addFavourite);
     router.route('/:id/favourites')
         .get(accountsController.getFavourites);
-
+    
+    router.route('/email/:id')
+        .get(accountsController.findByEmail);
+        
 
     return router;
 };
