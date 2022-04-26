@@ -36,4 +36,5 @@
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0"
   }
+  ,"proxy":"http://localhost:8080"
 }

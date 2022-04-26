@@ -26,5 +26,13 @@ export default {
     }
     const token = tokenManager.generate({ email: account.email });
     return token;
+  },
+  verifyToken:   async (token,{accountsRepository, tokenManager}) => {
+    const decoded = await tokenManager.decode(token);
+    const user = await accountsRepository.getByEmail(decoded.email);
+    if (!user) {
+        throw new Error('Bad token');
+    }
+    return user.email;
   }
 };
