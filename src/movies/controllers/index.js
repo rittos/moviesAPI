@@ -19,8 +19,20 @@ import moviesService from "./../services";
           response.status(200).json(accounts);
       };
 
+      const addFantasyMovie = async (request, response, next) => {
+        try {
+            const { name, genreId, runtime, overview, relaeseDt, actorIds } = request.body;
+            const id = request.params.id;
+            const fantasymovie = await moviesService.addFantasyMovie(id, name, genreId,runtime,overview,relaeseDt,actorIds, dependencies);
+            response.status(201).json(fantasymovie);
+        } catch (err) {
+            next(new Error(`Invalid Data ${err.message}`));
+        }
+    };
+
       return {
           getMovie,
-          find
+          find,
+          addFantasyMovie
       };
   };

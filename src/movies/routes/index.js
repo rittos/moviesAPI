@@ -8,14 +8,17 @@ const createMoviesRouter = (dependencies) => {
     const moviesController = MoviesController(dependencies);
     const accountsController = AccountController(dependencies);
 
-    router.route('/*')
-        .all(accountsController.verifyToken);
+    // router.route('/*')
+    //     .all(accountsController.verifyToken);
 
-    router.route('/:id')
-        .get(moviesController.getMovie);
+    // router.route('/:id')
+    //     .get(moviesController.getMovie);
 
-    router.route('/')
-        .get(moviesController.find);
+    // router.route('/')
+    //     .get(moviesController.find);
+
+    router.route('/:id/fantasymovie')
+        .post(moviesController.addFantasyMovie);
 
     return router;
 };

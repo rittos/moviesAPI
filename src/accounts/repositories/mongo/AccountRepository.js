@@ -27,7 +27,7 @@ export default class extends AccountRepository {
     async merge(accountEntity) {
         const {id, firstName, lastName, email, password, favourites } = accountEntity;
         await this.model.findByIdAndUpdate(id, { firstName, lastName, email, password, favourites });
-        console.log({id, firstName, lastName, email, password, favourites });
+        // console.log({id, firstName, lastName, email, password, favourites });
         return accountEntity;
     }
 
@@ -36,18 +36,13 @@ export default class extends AccountRepository {
     }
 
     async get(userId) {
-        // console.log("name");
         const result = await this.model.findById(userId);
-        console.log(result.firstName);
         const {id, firstName, lastName, email, password, favourites } = result;
         return new Account(id, firstName, lastName, email, password, favourites );
     }
 
     async getByEmail(userEmail) {
-        // console.log(userEmail);
         const result = await this.model.findOne({email: userEmail});
-        console.log("result");
-        console.log(result.id);
         return new Account(result.id, result.firstName, result.lastName, result.email, result.password,result.favourites);
     }
 

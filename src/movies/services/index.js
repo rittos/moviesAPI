@@ -1,4 +1,5 @@
 import axios from 'axios';
+import FantasyMovie from '../entities/FantasyMovie';
 
 export default {
     getMovie: async (movieId) => {
@@ -13,5 +14,9 @@ export default {
           );
           return response.data;
     },
+    addFantasyMovie: async  (userId, name, genreId, runtime,overview, releaseDt, actorIds , {movieRepository}) => {
+        const fantasyMovie = new FantasyMovie(undefined,userId, name, genreId, runtime, overview, releaseDt,actorIds);
+        return movieRepository.persist(fantasyMovie);
+      },
 
   };
