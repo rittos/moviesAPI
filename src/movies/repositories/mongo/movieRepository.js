@@ -20,15 +20,16 @@ export default class extends MovieRepository {
 
     async persist(fantasyMovieEntity) {
         const {userId, name, genreId, runtime, overview, releaseDt, actorIds} = fantasyMovieEntity;
-        console.log("release date :::::::::::::::::::::::::::: " +releaseDt);
         const result = new this.model({userId, name, genreId, runtime, overview,releaseDt,actorIds});
         await result.save();
         fantasyMovieEntity.id=result.id;
         return fantasyMovieEntity;
     }
     async get(userID) {
-        console.log("success : "+ userID);
         const result = await this.model.findOne({userId: userID});
+        if(result == null){
+            return [];
+        }
         const {id, userId, name, genreId, runtime, overview, releaseDt, actorIds } = result;
         return new FantasyMovie(id, userId, name, genreId, runtime, overview, releaseDt, actorIds);
     }
