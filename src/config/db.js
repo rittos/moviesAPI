@@ -21,7 +21,7 @@ export default {
         console.log(`database connected to ${db.name} on ${db.host}`);
         //delete the existing accounts collection if in development mode
         if (process.env.NODE_ENV=="development"){
-          db.dropCollection("accounts",function(err, result) {console.log(result)} );
+          // db.dropCollection("accounts",function(err, result) {console.log(result)} );
         }
       });
     }

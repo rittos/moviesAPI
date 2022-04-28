@@ -17,9 +17,7 @@ export default {
   },
 
   authenticate: async (email, password, { accountRepository, authenticator, tokenManager }) => {
-    // console.log(password)
     const account = await accountRepository.getByEmail(email);
-
     const result = await authenticator.compare(password, account.password);
     if (!result) {
       throw new Error('Bad credentials');
@@ -40,9 +38,7 @@ export default {
     return account.favourites;
   },
   addFavourite: async (accountId, movieId, { accountRepository }) => {
-    console.log("mongo");
     const account = await accountRepository.get(accountId);
-    console.log(account.email);
     account.favourites.push(movieId);
     return await accountRepository.merge(account);
 

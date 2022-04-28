@@ -42,7 +42,6 @@ export default (dependencies) => {
         const authHeader = request.headers.authorization;
 
         // Treatment
-
         const accessToken = authHeader.split(" ")[1];
         const user = await accountService.verify(accessToken, dependencies);
 
@@ -57,7 +56,6 @@ export default (dependencies) => {
         try {
             const { movieId } = request.body;
             const id = request.params.id;
-            // console.log(id);
             const account = await accountService.addFavourite(id, movieId, dependencies);
             response.status(200).json(account);
         } catch (err) {
