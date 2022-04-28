@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import FantasyMovie from '../../entities/FantasyMovie';
 import MovieRepository from '../Repository';
 
 export default class extends MovieRepository {
@@ -6,6 +7,7 @@ export default class extends MovieRepository {
     constructor() {
         super();
         const fantasymovieSchema = new mongoose.Schema({
+            userId: String,
             name: String,
             genreId: String,
             runtime: Number,
@@ -17,10 +19,17 @@ export default class extends MovieRepository {
     }
 
     async persist(fantasyMovieEntity) {
-        const {name, genreId, runtime, overview, releaseDt, actorIds} = fantasyMovieEntity;
-        const result = new this.model({name, genreId, runtime, overview,releaseDt,actorIds});
+        const {userId, name, genreId, runtime, overview, releaseDt, actorIds} = fantasyMovieEntity;
+        console.log("release date :::::::::::::::::::::::::::: " +releaseDt);
+        const result = new this.model({userId, name, genreId, runtime, overview,releaseDt,actorIds});
         await result.save();
         fantasyMovieEntity.id=result.id;
         return fantasyMovieEntity;
+    }
+    async get(userID) {
+        console.log("success : "+ userID);
+        const result = await this.model.findOne({userId: userID});
+        const {id, userId, name, genreId, runtime, overview, releaseDt, actorIds } = result;
+        return new FantasyMovie(id, userId, name, genreId, runtime, overview, releaseDt, actorIds);
     }
 }

@@ -19,6 +19,8 @@ const createMoviesRouter = (dependencies) => {
 
     router.route('/:id/fantasymovie')
         .post(moviesController.addFantasyMovie);
+    router.route('/:id/fantasymovie')
+        .get(moviesController.getFantasyMovie);
 
     return router;
 };

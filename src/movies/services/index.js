@@ -18,5 +18,8 @@ export default {
         const fantasyMovie = new FantasyMovie(undefined,userId, name, genreId, runtime, overview, releaseDt,actorIds);
         return movieRepository.persist(fantasyMovie);
       },
+    getFantasyMovie: async (userId, {movieRepository}) => {
+      return movieRepository.get(userId);
+    },
 
   };
