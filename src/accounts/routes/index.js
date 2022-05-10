@@ -1,14 +1,17 @@
 import express from 'express';
 import AccountsController from '../controllers';
+import AccountsValidator from '../controllers/validation';
 
 const createRouter = (dependencies) => {
     const router = express.Router();
     // load controller with dependencies
     const accountsController = AccountsController(dependencies);
-    router.route('/')
-        .post(accountsController.createAccount);
+    const accountsValidator = AccountsValidator(dependencies);
 
-        router.route('/')
+    router.route('/')
+        .post(accountsValidator.validateAccount, accountsController.createAccount);
+
+    router.route('/')
         .get(accountsController.listAccounts);
 
     router.route('/:id')
