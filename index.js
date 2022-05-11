@@ -9,6 +9,7 @@ import Authenticator from './src/accounts/security/bcrypt';
 import TokenManager from './src/accounts/security/jwt';
 import MovieRepository from './src/movies/repositories/mongo/movieRepository';
 import accountsSchema from './src/accounts/validators';
+import createPeoplesRouter from './src/peoples/routes';
 
 dotenv.config();
 
@@ -32,7 +33,7 @@ app.get('/', (req, res) => { res.end('All Good!'); });
 // app.use('/api/movies', moviesRouter);
 app.use('/api/accounts', createAccountsRouter(dependencies));
 app.use('/api/movies', createMoviesRouter(dependencies));
-
+app.use('/api/people', createPeoplesRouter(dependencies));
 app.use(errorHandler);
 app.listen(port, () => {
   console.info(`Server running at ${port}`);
