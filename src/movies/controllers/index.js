@@ -3,20 +3,28 @@ import moviesService from "./../services";
   export default (dependencies) => {
 
       const getMovie = async (request, response, next) => {
+        try {
           //input
           const movieId = request.params.id;
           // Treatment
           const movie = await moviesService.getMovie(movieId, dependencies);
           //output
           response.status(200).json(movie);
+        } catch (err) {
+            next(new Error(`Movies fetch ${err.message}`));
+        }
       };
       const find = async (request, response, next) => {
+        try {
           //input
           const query = request.query;
           // Treatment
           const accounts = await moviesService.find(query, dependencies);
           //output
           response.status(200).json(accounts);
+        } catch (err) {
+            next(new Error(`Movies fetch ${err.message}`));
+        }
       };
 
       const addFantasyMovie = async (request, response, next) => {
@@ -38,10 +46,111 @@ import moviesService from "./../services";
         response.status(200).json(fantasymovie);
     };
 
+    const getGenres = async (request, response, next) => {
+      try {
+      // Treatment
+      const genres = await moviesService.getGenres(dependencies);
+      //output
+      response.status(200).json(genres);
+    } catch (err) {
+      next(new Error(`Genres fetch ${err.message}`));
+  }
+    };
+    const getMovieImages = async (request, response, next) => {
+      try {
+        //input
+        const query = request.query;
+        const id = request.params.id;
+        // Treatment
+        const movieimages = await moviesService.getMovieImages(id, query, dependencies);
+        //output
+        response.status(200).json(movieimages);
+      } catch (err) {
+          next(new Error(`Movie images fetch ${err.message}`));
+      }
+    };
+    const getMovieReviews = async (request, response, next) => {
+      try {
+      //input
+      const movieId = request.params.id;
+      // Treatment
+      const reviews = await moviesService.getMovieReviews(movieId, dependencies);
+      //output
+      response.status(200).json(reviews);
+      } catch (err) {
+          next(new Error(`Movie reviews by id fetch ${err.message}`));
+      }
+   };
+   const getUpcomingMovies = async (request, response, next) => {
+    try {
+      //input
+      const query = request.query;
+      // Treatment
+      const upcomingmovies = await moviesService.getUpcomingMovies(query, dependencies);
+      //output
+      response.status(200).json(upcomingmovies);
+      } catch (err) {
+          next(new Error(`Upcoming movies fetch ${err.message}`));
+      }
+    };
+    const getLanguages = async (request, response, next) => {
+      try {
+        // Treatment
+        const languages = await moviesService.getLanguages(dependencies);
+        //output
+        response.status(200).json(languages);
+        } catch (err) {
+            next(new Error(`Languages fetch ${err.message}`));
+        }
+    };
+    const searchMovies = async (request, response, next) => {
+      try {
+        //input
+        const query = request.query;
+        // Treatment
+        const movies = await moviesService.searchMovies(query, dependencies);
+        //output
+        response.status(200).json(movies);
+        } catch (err) {
+            next(new Error(`Search movies ${err.message}`));
+        }
+    };
+    const getTopRatedMovies = async (request, response, next) => {
+      try {
+        //input
+        const query = request.query;
+        // Treatment
+        const movies = await moviesService.getTopRatedMovies(query, dependencies);
+        //output
+        response.status(200).json(movies);
+        } catch (err) {
+            next(new Error(`Top rated movies fetch ${err.message}`));
+        }
+    };
+    const getNowPlayingMovies = async (request, response, next) => {
+      try {
+        //input
+        const query = request.query;
+        // Treatment
+        const movies = await moviesService.getNowPlayingMovies(query, dependencies);
+        //output
+        response.status(200).json(movies);
+        } catch (err) {
+            next(new Error(`Now playing movies fetch ${err.message}`));
+        }
+    };
       return {
           getMovie,
           find,
           addFantasyMovie,
-          getFantasyMovie
+          getFantasyMovie,
+          getGenres,
+          getMovieImages,
+          getMovieReviews,
+          getUpcomingMovies,
+          getLanguages,
+          searchMovies,
+          getTopRatedMovies,
+          getNowPlayingMovies
       };
   };

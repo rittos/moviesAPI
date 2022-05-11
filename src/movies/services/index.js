@@ -22,4 +22,53 @@ export default {
       return movieRepository.get(userId);
     },
 
+    getGenres: async () => {
+      const response = await axios.get(
+          `https://api.themoviedb.org/3/genre/movie/list?api_key=${process.env.TMDB_KEY}`
+        );
+        return response.data;
+    },
+    getMovieImages: async (id, query) => {
+      const response = await axios.get(
+          `https://api.themoviedb.org/3/movie/${id}/images?api_key=${process.env.TMDB_KEY}&${query}`
+        );
+        return response.data;
+    },
+    getMovieReviews: async (movieId) => {
+      const response = await axios.get(
+          `https://api.themoviedb.org/3/movie/${movieId}/reviews?api_key=${process.env.TMDB_KEY}`
+        );
+        return response.data;
+    },
+    getUpcomingMovies: async (query) => {
+      const response = await axios.get(
+          `https://api.themoviedb.org/3/movie/upcoming?api_key=${process.env.TMDB_KEY}&language=en-US&include_adult=false&${query}`
+        );
+        return response.data;
+    },
+    getLanguages: async () => {
+      const response = await axios.get(
+          `https://api.themoviedb.org/3/configuration/languages?api_key=${process.env.TMDB_KEY}`
+        );
+        return response.data;
+    },
+    searchMovies: async (query) => {
+      const response = await axios.get(
+          `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.TMDB_KEY}&${query}`
+        );
+        return response.data;
+    },
+    getTopRatedMovies: async (query) => {
+      const response = await axios.get(
+          `https://api.themoviedb.org/3/movie/top_rated?api_key=${process.env.TMDB_KEY}&language=en-US&include_adult=false&${query}`
+        );
+        return response.data;
+    },
+    getNowPlayingMovies: async (query) => {
+      const response = await axios.get(
+          `https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.TMDB_KEY}&language=en-US&include_adult=false&${query}`
+        );
+        return response.data;
+    },
+
   };
