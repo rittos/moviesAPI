@@ -19,7 +19,7 @@ const createPeopleRouter = (dependencies) => {
 
     router.route('/:id/movie_credits')
         .get(peoplesController.getMovieCredits);
-    router.route('/latest/people')
+    router.route('/latest/all')
         .get(peoplesController.getLatestPeoples);
 
     return router;
