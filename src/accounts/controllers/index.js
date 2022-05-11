@@ -39,11 +39,11 @@ export default (dependencies) => {
     const verifyToken = async (request, response, next) => {
         try { 
         // Input
-        const authHeader = request.headers.authorization;
+        const authHeader = request.headers.token;
 
         // Treatment
         const accessToken = authHeader.split(" ")[1];
-        const user = await accountService.verify(accessToken, dependencies);
+        const user = await accountService.verifyToken(accessToken, dependencies);
 
         //output
         next();
