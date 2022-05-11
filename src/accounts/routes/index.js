@@ -8,28 +8,31 @@ const createRouter = (dependencies) => {
     const accountsController = AccountsController(dependencies);
     const accountsValidator = AccountsValidator(dependencies);
 
-    router.route('/')
-        .post(accountsValidator.validateAccount, accountsController.createAccount);
+    // router.route('/')
+    // .post(accountsValidator.validateAccount, accountsController.createAccount);
 
     router.route('/')
-        .get(accountsController.verifyToken, accountsController.listAccounts);
+        .post(accountsController.createAccount);
+
+    router.route('/')
+        .get(accountsController.listAccounts);
 
     router.route('/:id')
-        .get(accountsController.verifyToken, accountsController.getAccount);
+        .get(accountsController.getAccount);
 
     router.route('/:id')
-        .post(accountsController.verifyToken, accountsController.getAccount);
+        .post(accountsController.getAccount);
 
     router.route('/security/token')
         .post(accountsController.authenticateAccount);
 
     router.route('/:id/favourites')
-        .post(accountsController.verifyToken, accountsController.addFavourite);
+        .post(accountsController.addFavourite);
     router.route('/:id/favourites')
-        .get(accountsController.verifyToken, accountsController.getFavourites);
+        .get(accountsController.getFavourites);
     
     router.route('/email/:id')
-        .get(accountsController.verifyToken, accountsController.findByEmail);
+        .get(accountsController.findByEmail);
         
 
     return router;

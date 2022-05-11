@@ -4,7 +4,7 @@ export default {
 
     getPopularPeoples: async (query) => {
       const response = await axios.get(
-          `https://api.themoviedb.org/3/person/popular?api_key=${process.env.TMDB_KEY}&language=en-US&${query}`
+          `https://api.themoviedb.org/3/person/popular?api_key=${process.env.TMDB_KEY}&language=en-US&page=${query['page']}`
         );
         return response.data;
     },

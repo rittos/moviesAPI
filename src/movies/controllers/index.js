@@ -59,10 +59,9 @@ import moviesService from "./../services";
     const getMovieImages = async (request, response, next) => {
       try {
         //input
-        const query = request.query;
         const id = request.params.id;
         // Treatment
-        const movieimages = await moviesService.getMovieImages(id, query, dependencies);
+        const movieimages = await moviesService.getMovieImages(id, dependencies);
         //output
         response.status(200).json(movieimages);
       } catch (err) {
