@@ -10,6 +10,7 @@ import TokenManager from './src/accounts/security/jwt';
 import MovieRepository from './src/movies/repositories/mongo/movieRepository';
 import accountsSchema from './src/accounts/validators';
 import createPeoplesRouter from './src/peoples/routes';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -25,6 +26,24 @@ const dependencies = {
   movieRepository: new MovieRepository(),
   accountsValidator: accountsSchema
 };
+
+// var allowedOrigins = ['http://localhost:3000',
+//                       'https://web-development-moviesapp.azurewebsites.net'];
+// app.use(cors({
+//   origin: function(origin, callback){
+//     // allow requests with no origin 
+//     // (like mobile apps or curl requests)
+//     if(!origin) return callback(null, true);
+//     if(allowedOrigins.indexOf(origin) === -1){
+//       var msg = 'The CORS policy for this site does not ' +
+//                 'allow access from the specified Origin.';
+//       return callback(new Error(msg), false);
+//     }
+//     return callback(null, true);
+//   }
+// }));
+
+app.use(cors());
 
 //Application Middleware
 app.use(express.json());
