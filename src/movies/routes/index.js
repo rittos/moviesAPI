@@ -12,22 +12,22 @@ const createMoviesRouter = (dependencies) => {
     //     .all(accountsController.verifyToken);
 
     router.route('/:id')
-        .get(moviesController.getMovie);
+        .get(accountsController.verifyToken,moviesController.getMovie);
 
     router.route('/')
         .get(moviesController.find);
 
     router.route('/:id/fantasymovie')
-        .post(moviesController.addFantasyMovie);
+        .post(accountsController.verifyToken,moviesController.addFantasyMovie);
     router.route('/:id/fantasymovie')
-        .get(moviesController.getFantasyMovie);
+        .get(accountsController.verifyToken,moviesController.getFantasyMovie);
 
     router.route('/genres/all')
         .get(moviesController.getGenres);
     router.route('/:id/movie_images')
-        .get(moviesController.getMovieImages);
+        .get(accountsController.verifyToken,moviesController.getMovieImages);
     router.route('/:id/movie_reviews')
-        .get(moviesController.getMovieReviews);
+        .get(accountsController.verifyToken,moviesController.getMovieReviews);
     router.route('/upcoming/all')
         .get(moviesController.getUpcomingMovies);
     router.route('/languages/all')
