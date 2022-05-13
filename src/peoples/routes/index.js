@@ -12,13 +12,13 @@ const createPeopleRouter = (dependencies) => {
     //     .all(accountsController.verifyToken);
 
     router.route('/:id')
-        .get(peoplesController.getPeopleById);
+        .get(accountsController.verifyToken,peoplesController.getPeopleById);
 
     router.route('/')
         .get(peoplesController.getPopularPeoples);
 
     router.route('/:id/movie_credits')
-        .get(peoplesController.getMovieCredits);
+        .get(accountsController.verifyToken,peoplesController.getMovieCredits);
     router.route('/latest/all')
         .get(peoplesController.getLatestPeoples);
 

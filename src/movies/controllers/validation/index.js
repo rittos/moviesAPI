@@ -1,11 +1,11 @@
 export default (dependencies) => {
 
-    const { accountsValidator } = dependencies;
+    const { moviesValidator } = dependencies;
 
-    const validateAccount = async (request, response, next) => {
+    const validateFantasyMovie = async (request, response, next) => {
         // Input
         try {
-            const validated = await accountsValidator.validateAsync(request.body);
+            const validated = await moviesValidator.validateAsync(request.body);
             request.body = validated;
             next();
         } catch (err) {
@@ -14,6 +14,6 @@ export default (dependencies) => {
     };
 
     return {
-        validateAccount
+        validateFantasyMovie
     };
 };
