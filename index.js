@@ -9,6 +9,7 @@ import Authenticator from './src/accounts/security/bcrypt';
 import TokenManager from './src/accounts/security/jwt';
 import MovieRepository from './src/movies/repositories/mongo/movieRepository';
 import accountsSchema from './src/accounts/validators';
+import fantasyMovieSchema from './src/movies/validators';
 import createPeoplesRouter from './src/peoples/routes';
 import cors from 'cors';
 
@@ -24,7 +25,8 @@ const dependencies = {
   authenticator: new Authenticator(),
   tokenManager: new TokenManager(),
   movieRepository: new MovieRepository(),
-  accountsValidator: accountsSchema
+  accountsValidator: accountsSchema,
+  moviesValidator: fantasyMovieSchema
 };
 
 // var allowedOrigins = ['http://localhost:3000',

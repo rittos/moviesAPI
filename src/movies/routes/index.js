@@ -1,27 +1,25 @@
 import express from 'express';
 import MoviesController from '../controllers';
 import AccountController from '../../accounts/controllers';
+import MoviesValidator from '../controllers/validation';
 
 const createMoviesRouter = (dependencies) => {
     const router = express.Router();
     // load controllers with dependencies
     const moviesController = MoviesController(dependencies);
     const accountsController = AccountController(dependencies);
-
+    const moviesValidator = MoviesValidator(dependencies);
     // router.route('/*')
     //     .all(accountsController.verifyToken);
 
     router.route('/:id')
         .get(accountsController.verifyToken,moviesController.getMovie);
-
     router.route('/')
         .get(moviesController.find);
-
     router.route('/:id/fantasymovie')
-        .post(accountsController.verifyToken,moviesController.addFantasyMovie);
+        .post(moviesValidator.validateFantasyMovie, accountsController.verifyToken,moviesController.addFantasyMovie);
     router.route('/:id/fantasymovie')
         .get(accountsController.verifyToken,moviesController.getFantasyMovie);
-
     router.route('/genres/all')
         .get(moviesController.getGenres);
     router.route('/:id/movie_images')

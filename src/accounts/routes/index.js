@@ -8,20 +8,14 @@ const createRouter = (dependencies) => {
     const accountsController = AccountsController(dependencies);
     const accountsValidator = AccountsValidator(dependencies);
 
-    // router.route('/')
-    // .post(accountsValidator.validateAccount, accountsController.createAccount);
-
     router.route('/')
-        .post(accountsController.createAccount);
+        .post(accountsValidator.validateAccount,accountsController.createAccount);
 
     router.route('/')
         .get(accountsController.verifyToken,accountsController.listAccounts);
 
     router.route('/:id')
         .get(accountsController.verifyToken,accountsController.getAccount);
-
-    // router.route('/:id')
-    //     .post(accountsController.getAccount);
 
     router.route('/security/token')
         .post(accountsController.authenticateAccount);
