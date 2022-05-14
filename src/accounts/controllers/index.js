@@ -1,4 +1,5 @@
 import accountService from "../services";
+import logger  from 'logops';
 
 export default (dependencies) => {
 
@@ -30,18 +31,19 @@ export default (dependencies) => {
     const authenticateAccount = async (request, response, next) => {
         try {
             const { email, password } = request.body;
+            // console.info("email:" + email);
+            // console.info("pwd:" + password);
             const token = await accountService.authenticate(email, password, dependencies);
             response.status(200).json({ token: `BEARER ${token}` });
         } catch (error) {
+            logger.warn("Unauthorised");
             response.status(401).json({ message: 'Unauthorised' });
         }
     };
     const verifyToken = async (request, response, next) => {
         try { 
             // Input
-            const authHeader = request.headers.token;
-            // console.log("header :::::::::::::::::::::: "+ request.headers.token);
-
+            const authHeader = request.headers.authorization;
             // Treatment
             const accessToken = authHeader.split(" ")[1];
             const user = await accountService.verifyToken(accessToken, dependencies);
@@ -74,6 +76,16 @@ export default (dependencies) => {
         }
     };
 
+    const deleteFavourite = async (request, response, next) => {
+        try {
+            const { userId, movieId } = request.body;
+            const account = await accountService.deleteFavourite(userId, movieId, dependencies);
+            response.status(200).json(account);
+        } catch (err) {
+            next(new Error(`Invalid Data ${err.message}`));
+        }
+    };
+
     const findByEmail = async (request, response, next) => {
         //input
         const emailId = request.params.id;
@@ -93,6 +105,7 @@ export default (dependencies) => {
         verifyToken,
         addFavourite,
         getFavourites,
-        findByEmail
+        findByEmail,
+        deleteFavourite
     };
 };
