@@ -73,5 +73,11 @@ export default {
     uploadPoster: async  (posterObj, {movieRepository}) => {
       return movieRepository.uploadPoster(posterObj);
     },
-
+    updateFantasyMovie: async  (userId, name, genreId, runtime,overview, releaseDt, actorIds, {movieRepository}) => {
+      const fantasyMovie = new FantasyMovie(undefined,userId, name, genreId, runtime, overview, releaseDt,actorIds);
+      return movieRepository.updateFantasyMovie(fantasyMovie);
+    },
+    deleteFantasyMovie: async  (userId, {movieRepository}) => {
+      return movieRepository.deleteFantasyMovie(userId);
+    },
   };
