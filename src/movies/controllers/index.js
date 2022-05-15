@@ -1,4 +1,6 @@
 import moviesService from "./../services";
+import fs from 'fs';
+import path from 'path';
 
   export default (dependencies) => {
 
@@ -138,6 +140,22 @@ import moviesService from "./../services";
             next(new Error(`Now playing movies fetch ${err.message}`));
         }
     };
+    const uploadPoster = async (request, response, next) => {
+      try {
+          // const { name, genreId, runtime, overview, releaseDt, actorIds } = request.body;
+          var posterObj = {
+            userid: request.params.id, //'testname',// req.body.name,
+            img: {
+                data: fs.readFileSync(path.join(__dirname+'../../../../imageuploads/' + request.file.filename)),
+                contentType: 'image/png'
+            }
+          };
+          const fantasymovie = await moviesService.uploadPoster(posterObj, dependencies);
+          response.status(201).json(fantasymovie);
+      } catch (err) {
+          next(new Error(`Invalid Data ${err.message}`));
+      }
+    };
       return {
           getMovie,
           find,
@@ -150,6 +168,7 @@ import moviesService from "./../services";
           getLanguages,
           searchMovies,
           getTopRatedMovies,
-          getNowPlayingMovies
+          getNowPlayingMovies,
+          uploadPoster
       };
   };

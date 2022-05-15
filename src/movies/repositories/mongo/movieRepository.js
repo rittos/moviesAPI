@@ -6,6 +6,15 @@ export default class extends MovieRepository {
 
     constructor() {
         super();
+        var imageSchema = new mongoose.Schema({
+            fantasymovieid: String,
+            img:
+            {
+                data: Buffer,
+                contentType: String
+            }
+          });
+
         const fantasymovieSchema = new mongoose.Schema({
             userId: String,
             name: String,
@@ -13,9 +22,11 @@ export default class extends MovieRepository {
             runtime: Number,
             overview: String,
             releaseDt: String,
-            actorIds: [Number]
+            actorIds: [Number],
+            posterimage: imageSchema
         });
         this.model = mongoose.model('FantasyMovie', fantasymovieSchema);
+        
     }
 
     async persist(fantasyMovieEntity) {
@@ -30,7 +41,19 @@ export default class extends MovieRepository {
         if(result == null){
             return [];
         }
-        const {id, userId, name, genreId, runtime, overview, releaseDt, actorIds } = result;
-        return new FantasyMovie(id, userId, name, genreId, runtime, overview, releaseDt, actorIds);
+        const {id, userId, name, genreId, runtime, overview, releaseDt, actorIds, posterimage } = result;
+        return new FantasyMovie(id, userId, name, genreId, runtime, overview, releaseDt, actorIds, posterimage);
+    }
+    async uploadPoster(posterObj) {
+
+        const result = await this.model.findOne({userId: posterObj.userid});
+        if(result == null){
+            return [];
+        }
+        var {id, userId, name, genreId, runtime, overview, releaseDt, actorIds, posterimage } = result;
+        posterimage = posterObj;
+        await this.model.findByIdAndUpdate(id, { id, userId, name, genreId, runtime, overview,releaseDt,actorIds, posterimage });
+
+        return null;
     }
 }

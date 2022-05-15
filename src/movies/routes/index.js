@@ -2,6 +2,7 @@ import express from 'express';
 import MoviesController from '../controllers';
 import AccountController from '../../accounts/controllers';
 import MoviesValidator from '../controllers/validation';
+import Upload from '../../utils/PosterUploadHelper';
 
 const createMoviesRouter = (dependencies) => {
     const router = express.Router();
@@ -16,6 +17,10 @@ const createMoviesRouter = (dependencies) => {
         .get(accountsController.verifyToken,moviesController.getMovie);
     router.route('/')
         .get(moviesController.find);
+
+    router.route('/:id/fantasymovie/uploadposter')
+        .post(accountsController.verifyToken,Upload.single('posterImage'),moviesController.uploadPoster);
+
     router.route('/:id/fantasymovie')
         .post(moviesValidator.validateFantasyMovie, accountsController.verifyToken,moviesController.addFantasyMovie);
     router.route('/:id/fantasymovie')

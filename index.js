@@ -40,7 +40,7 @@ app.use(expressLogging(logger));
 //Application Middleware
 app.use(express.json());
 app.get('/', (req, res) => { res.end('All Good!'); });
-// app.use('/api/movies', moviesRouter);
+
 app.use('/api/accounts', createAccountsRouter(dependencies));
 app.use('/api/movies', createMoviesRouter(dependencies));
 app.use('/api/people', createPeoplesRouter(dependencies));
