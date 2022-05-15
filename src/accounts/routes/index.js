@@ -24,6 +24,9 @@ const createRouter = (dependencies) => {
         .post(accountsController.verifyToken,accountsController.addFavourite);
     router.route('/:id/favourites')
         .get(accountsController.verifyToken,accountsController.getFavourites);
+
+    router.route('/deleteFavourite')
+        .post(accountsController.verifyToken,accountsController.deleteFavourite);
     
     router.route('/email/:id')
         .get(accountsController.verifyToken,accountsController.findByEmail);

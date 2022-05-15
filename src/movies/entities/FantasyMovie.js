@@ -1,5 +1,5 @@
 export default class {
-    constructor(id = undefined, userId, name, genreId, runtime, overview,releaseDt,actorIds) {
+    constructor(id = undefined, userId, name, genreId, runtime, overview,releaseDt,actorIds,posterimage) {
       this.id = id;
       this.userId = userId;
       this.name = name;
@@ -8,5 +8,6 @@ export default class {
       this.overview = overview;
       this.releaseDt = releaseDt;
       this.actorIds = actorIds;
+      this.posterimage = posterimage;
     }
   }

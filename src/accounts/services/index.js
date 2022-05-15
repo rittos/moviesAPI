@@ -42,5 +42,13 @@ export default {
     account.favourites.push(movieId);
     return await accountRepository.merge(account);
 
+  },
+  deleteFavourite: async (accountId, movieId, { accountRepository }) => {
+    const account = await accountRepository.get(accountId);
+    var IdIndex =  account.favourites.indexOf(movieId);
+    if (IdIndex !== -1) {
+      account.favourites.splice(IdIndex, 1);
+    }
+    return await accountRepository.merge(account);
   }
 };

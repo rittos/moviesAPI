@@ -70,5 +70,8 @@ export default {
         );
         return response.data;
     },
+    uploadPoster: async  (posterObj, {movieRepository}) => {
+      return movieRepository.uploadPoster(posterObj);
+    },
 
   };

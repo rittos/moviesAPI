@@ -12,6 +12,8 @@ import accountsSchema from './src/accounts/validators';
 import fantasyMovieSchema from './src/movies/validators';
 import createPeoplesRouter from './src/peoples/routes';
 import cors from 'cors';
+import expressLogging  from 'express-logging';
+import logger  from 'logops';
 
 dotenv.config();
 
@@ -29,29 +31,16 @@ const dependencies = {
   moviesValidator: fantasyMovieSchema
 };
 
-// var allowedOrigins = ['http://localhost:3000',
-//                       'https://web-development-moviesapp.azurewebsites.net'];
-// app.use(cors({
-//   origin: function(origin, callback){
-//     // allow requests with no origin 
-//     // (like mobile apps or curl requests)
-//     if(!origin) return callback(null, true);
-//     if(allowedOrigins.indexOf(origin) === -1){
-//       var msg = 'The CORS policy for this site does not ' +
-//                 'allow access from the specified Origin.';
-//       return callback(new Error(msg), false);
-//     }
-//     return callback(null, true);
-//   }
-// }));
-
 app.use(cors());
-
+// express logging middlewear
+if(process.env.NODE_ENV === "development")
+{
+app.use(expressLogging(logger));
+}
 //Application Middleware
 app.use(express.json());
 app.get('/', (req, res) => { res.end('All Good!'); });
 
-// app.use('/api/movies', moviesRouter);
 app.use('/api/accounts', createAccountsRouter(dependencies));
 app.use('/api/movies', createMoviesRouter(dependencies));
 app.use('/api/people', createPeoplesRouter(dependencies));
