@@ -142,9 +142,8 @@ import path from 'path';
     };
     const uploadPoster = async (request, response, next) => {
       try {
-          // const { name, genreId, runtime, overview, releaseDt, actorIds } = request.body;
           var posterObj = {
-            userid: request.params.id, //'testname',// req.body.name,
+            userid: request.params.id,
             img: {
                 data: fs.readFileSync(path.join(__dirname+'../../../../imageuploads/' + request.file.filename)),
                 contentType: 'image/png'
@@ -152,6 +151,26 @@ import path from 'path';
           };
           const fantasymovie = await moviesService.uploadPoster(posterObj, dependencies);
           response.status(201).json(fantasymovie);
+      } catch (err) {
+          next(new Error(`Invalid Data ${err.message}`));
+      }
+    };
+
+    const updateFantasyMovie = async (request, response, next) => {
+      try {
+          const { name, genreId, runtime, overview, releaseDt, actorIds } = request.body;
+          const userId = request.params.id;
+          const fantasymovie = await moviesService.updateFantasyMovie(userId, name, genreId, runtime, overview, releaseDt, actorIds, dependencies);
+          response.status(204).json(fantasymovie);
+      } catch (err) {
+          next(new Error(`Invalid Data ${err.message}`));
+      }
+    };
+    const deleteFantasyMovie = async (request, response, next) => {
+      try {
+          const userId = request.params.id;
+          const fantasymovie = await moviesService.deleteFantasyMovie(userId, dependencies);
+          response.status(204).json(fantasymovie);
       } catch (err) {
           next(new Error(`Invalid Data ${err.message}`));
       }
@@ -169,6 +188,8 @@ import path from 'path';
           searchMovies,
           getTopRatedMovies,
           getNowPlayingMovies,
-          uploadPoster
+          uploadPoster,
+          updateFantasyMovie,
+          deleteFantasyMovie
       };
   };

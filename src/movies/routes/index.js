@@ -25,6 +25,12 @@ const createMoviesRouter = (dependencies) => {
         .post(moviesValidator.validateFantasyMovie, accountsController.verifyToken,moviesController.addFantasyMovie);
     router.route('/:id/fantasymovie')
         .get(accountsController.verifyToken,moviesController.getFantasyMovie);
+
+    router.route('/:id/fantasymovie')
+        .put(accountsController.verifyToken,moviesController.updateFantasyMovie);
+    router.route('/:id/fantasymovie')
+        .delete(accountsController.verifyToken,moviesController.deleteFantasyMovie);
+
     router.route('/genres/all')
         .get(moviesController.getGenres);
     router.route('/:id/movie_images')

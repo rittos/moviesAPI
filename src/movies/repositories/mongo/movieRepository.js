@@ -56,4 +56,24 @@ export default class extends MovieRepository {
 
         return null;
     }
+    async updateFantasyMovie(fantasyMovieEntity) {
+
+        const {userId, name, genreId, runtime, overview, releaseDt, actorIds} = fantasyMovieEntity;
+        const result = await this.model.findOne({userId: userId});
+        var {id} = result;
+        if(result == null){
+            return [];
+        }
+        await this.model.findByIdAndUpdate(id, { id, userId, name, genreId, runtime, overview, releaseDt, actorIds });
+        return null;
+    }
+    async deleteFantasyMovie(userID) {
+        const result = await this.model.deleteOne({userId: userID});
+        if(result == null){
+            return [];
+        }
+        const {id, userId, name, genreId, runtime, overview, releaseDt, actorIds, posterimage } = result;
+        return new FantasyMovie(id, userId, name, genreId, runtime, overview, releaseDt, actorIds, posterimage);
+    }
+    
 }
