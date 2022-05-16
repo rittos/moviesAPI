@@ -1,0 +1,15 @@
+{
+	"id": "396236d3-44a3-4b4a-b203-0e4aa48fb69a",
+	"name": "web-development",
+	"values": [
+		{
+			"key": "url",
+			"value": "http://localhost:8080",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2022-05-16T21:32:55.387Z",
+	"_postman_exported_using": "Postman/9.18.2"
+}

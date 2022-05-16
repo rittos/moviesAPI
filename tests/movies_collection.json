@@ -1,0 +1,1661 @@
+{
+	"info": {
+		"_postman_id": "e1a65d48-d11e-4ab0-9210-303413c9fedc",
+		"name": "Movies API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create New Account",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"firstName\", pm.variables.replaceIn('{{$randomFirstName}}'))\r",
+							"pm.collectionVariables.set(\"lastName\",pm.variables.replaceIn('{{$randomLastName}}'))\r",
+							"pm.collectionVariables.set(\"email\", pm.variables.replaceIn('{{$randomEmail}}'))\r",
+							"pm.collectionVariables.set(\"password\",\"test123@\")"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" pm.test(\"Add Account: Successful Response\",()=>pm.response.to.have.status(201))\r",
+							"   const jsonData = pm.response.json();\r",
+							"    pm.test(\"Add Account: Response Object contains correct properties\",()=>{\r",
+							"    pm.expect(jsonData).to.have.property(\"id\");\r",
+							"    pm.expect(jsonData.id).to.be.a(\"string\");\r",
+							"    pm.expect(jsonData.firstName).to.eql(pm.collectionVariables.get(\"firstName\"));\r",
+							"    pm.expect(jsonData.lastName).to.eql(pm.collectionVariables.get(\"lastName\"));\r",
+							"    pm.expect(jsonData.email).to.eql(pm.collectionVariables.get(\"email\"));\r",
+							"    pm.collectionVariables.set(\"userid\",jsonData.id);\r",
+							"    })"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\":\"{{firstName}}\",\r\n    \"lastName\":\"{{lastName}}\",\r\n    \"email\":\"{{email}}\",\r\n    \"password\":\"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/accounts",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Security Token",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"  const jsonData = pm.response.json();\r",
+							"\r",
+							"  pm.test(\"Get Token: Successful Response\",()=>pm.response.to.have.status(200))\r",
+							"\r",
+							"  pm.test(\"Get Token: Response Object contains token\",()=>{\r",
+							"    pm.expect(jsonData).to.have.property(\"token\");\r",
+							"    pm.expect(jsonData.token).to.be.a(\"string\");\r",
+							"  })\r",
+							"  pm.test(\"Get Token: Response contains correctly formatted token\",()=>{\r",
+							"    const splitArray = jsonData.token.split(\" \")\r",
+							"    pm.expect(splitArray[0].toLowerCase()).to.eql(\"bearer\");\r",
+							"    pm.expect(splitArray[1]).length.to.be.greaterThan(25);\r",
+							"    pm.collectionVariables.set(\"authToken\",splitArray[1])\r",
+							"  })"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"{{email}}\",\r\n    \"password\":\"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/accounts/security/token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"accounts",
+						"security",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAccountByEmailId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Account By emailid: Status code is 200\",  ()=> {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Get Account By emailid: Content-Type is correct\", function () {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.contain('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Account By emailid: Response time is less than 400ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Account By emailid: Test account data of response\", () => {\r",
+							"   pm.expect(jsonData).to.have.property(\"id\");\r",
+							"    pm.expect(jsonData.id).to.be.a(\"string\");\r",
+							"    pm.expect(jsonData.firstName).to.eql(pm.collectionVariables.get(\"firstName\"));\r",
+							"    pm.expect(jsonData.lastName).to.eql(pm.collectionVariables.get(\"lastName\"));\r",
+							"    pm.expect(jsonData.email).to.eql(pm.collectionVariables.get(\"email\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/accounts/email/{{email}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"accounts",
+						"email",
+						"{{email}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Accounts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get All Accounts: Status code is 200\",  ()=> {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Get All Accounts: Content-Type is correct\", function () {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.contain('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Get All Accounts: Response time is less than 400ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Get All Accounts: Test account data of response\", () => {\r",
+							"\r",
+							"    const aAccount = jsonData[0]\r",
+							"    pm.expect(aAccount).to.have.property(\"id\");\r",
+							"    pm.expect(aAccount.id).to.be.a(\"string\");\r",
+							"    pm.expect(aAccount).to.have.property(\"firstName\");\r",
+							"    pm.expect(aAccount.firstName).to.be.a(\"string\");\r",
+							"    pm.expect(aAccount).to.have.property(\"lastName\");\r",
+							"    pm.expect(aAccount.lastName).to.be.a(\"string\");\r",
+							"    pm.expect(aAccount).to.have.property(\"email\");\r",
+							"    pm.expect(aAccount.email).to.be.a(\"string\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/accounts",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Account By AccountId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Account By accountid: Status code is 200\",  ()=> {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Get Account By accountid: Content-Type is correct\", function () {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.contain('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Account By accountid: Response time is less than 400ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Account By accountid: Test account data of response\", () => {\r",
+							"   pm.expect(jsonData).to.have.property(\"id\");\r",
+							"    pm.expect(jsonData.id).to.be.a(\"string\");\r",
+							"    pm.expect(jsonData.firstName).to.eql(pm.collectionVariables.get(\"firstName\"));\r",
+							"    pm.expect(jsonData.lastName).to.eql(pm.collectionVariables.get(\"lastName\"));\r",
+							"    pm.expect(jsonData.email).to.eql(pm.collectionVariables.get(\"email\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/accounts/{{userid}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"accounts",
+						"{{userid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAccountByEmailId Invalid Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"   var jsonData = pm.response.json();\r",
+							"\r",
+							"  pm.test(\"Get Account By emailId Invalid Token: Correct Response\", function () {\r",
+							"     pm.expect(pm.response.code).to.be.oneOf([500,401,403]);\r",
+							"     pm.expect(jsonData).to.be.an(\"object\");\r",
+							"     pm.expect(jsonData).to.have.property(\"error\");\r",
+							"  });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "a bad token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/accounts/email/{{email}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"accounts",
+						"email",
+						"{{email}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Movies",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" pm.test(\"Get Movies: Successful Response\",()=>pm.response.to.have.status(200))\r",
+							" pm.test(\"Get Movies: Content-Type is correct\", function () {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.contain('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Get Movies: Response time is less than 400ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Get Movies: Test movie data of response\", () => {\r",
+							"  pm.expect(jsonData).to.be.an(\"object\");\r",
+							"  pm.expect(jsonData.page).to.be.a(\"number\");\r",
+							"  pm.expect(jsonData.results).to.be.an(\"array\").length.lessThan(21);\r",
+							"  aMovie=jsonData.results[0]\r",
+							"  pm.expect(aMovie).to.have.property(\"id\");\r",
+							"  pm.expect(aMovie).to.have.property(\"title\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/movies?page=1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"movies"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddFavoritestoUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" pm.test(\"Add Favorite: Successful Response\",()=>pm.response.to.have.status(200))\r",
+							"   const jsonData = pm.response.json();\r",
+							"    pm.test(\"Add Favorite: Response Object contains correct properties\",()=>{\r",
+							"    pm.expect(jsonData).to.have.property(\"id\");\r",
+							"    pm.expect(jsonData.id).to.be.a(\"string\");\r",
+							"    pm.expect(jsonData.firstName).to.eql(pm.collectionVariables.get(\"firstName\"));\r",
+							"    pm.expect(jsonData.lastName).to.eql(pm.collectionVariables.get(\"lastName\"));\r",
+							"    pm.expect(jsonData.email).to.eql(pm.collectionVariables.get(\"email\"));\r",
+							"    pm.expect(jsonData.favourites).to.be.an(\"array\");\r",
+							"    pm.collectionVariables.set(\"favoritemovie\",jsonData.favourites[0]);\r",
+							"    })"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"movieId\":1234}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/accounts/{{userid}}/favourites",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"accounts",
+						"{{userid}}",
+						"favourites"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetFavoritesByUserId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Favorites By userid: Status code is 200\",  ()=> {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Favorites By userid: Content-Type is correct\", function () {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.contain('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Favorites By userid: Response time is less than 400ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Favorites By userid: Test favorites data of response\", () => {\r",
+							"   pm.expect(jsonData).to.be.to.be.an(\"array\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/accounts/{{userid}}/favourites",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"accounts",
+						"{{userid}}",
+						"favourites"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Favorite Movie",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" pm.test(\"Delete Favorite: Successful Response\",()=>pm.response.to.have.status(200))\r",
+							"   const jsonData = pm.response.json();\r",
+							"    pm.test(\"Delete Favorite: Response Object contains correct properties\",()=>{\r",
+							"    pm.expect(jsonData).to.have.property(\"id\");\r",
+							"    pm.expect(jsonData.id).to.be.a(\"string\");\r",
+							"    pm.expect(jsonData.firstName).to.eql(pm.collectionVariables.get(\"firstName\"));\r",
+							"    pm.expect(jsonData.lastName).to.eql(pm.collectionVariables.get(\"lastName\"));\r",
+							"    pm.expect(jsonData.email).to.eql(pm.collectionVariables.get(\"email\"));\r",
+							"    pm.expect(jsonData.favourites).to.be.an(\"array\");\r",
+							"    })"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": \"{{userid}}\",\r\n    \"movieId\":\"{{favoritemovie}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/accounts/deleteFavourite",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"accounts",
+						"deleteFavourite"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Genres",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" pm.test(\"Get All Genres: Successful Response\",()=>pm.response.to.have.status(200))\r",
+							" pm.test(\"Get All Genres: Content-Type is correct\", function () {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.contain('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Get All Genres: Response time is less than 400ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Get All Genres: Test genres data of response\", () => {\r",
+							"  pm.expect(jsonData).to.be.an(\"object\");\r",
+							"  pm.expect(jsonData.genres).to.be.an(\"array\");\r",
+							"  const aGenres = jsonData.genres[0];\r",
+							"  pm.expect(aGenres).to.have.property(\"id\");\r",
+							"  pm.expect(aGenres).to.have.property(\"name\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/movies/genres/all",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"movies",
+						"genres",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Languages",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" pm.test(\"Get All Languages: Successful Response\",()=>pm.response.to.have.status(200))\r",
+							" pm.test(\"Get All Languages: Content-Type is correct\", function () {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.contain('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Get All Languages: Response time is less than 400ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Get All Languages: Test languages data of response\", () => {\r",
+							"  pm.expect(jsonData).to.be.an(\"array\");\r",
+							"  const aLanguage = jsonData[0];\r",
+							"  pm.expect(aLanguage).to.have.property(\"iso_639_1\");\r",
+							"  pm.expect(aLanguage).to.have.property(\"english_name\");\r",
+							"  pm.expect(aLanguage).to.have.property(\"name\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/movies/languages/all",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"movies",
+						"languages",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Latest People",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" pm.test(\"Get Latest People: Successful Response\",()=>pm.response.to.have.status(200))\r",
+							" pm.test(\"Get Latest People: Content-Type is correct\", function () {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.contain('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Get Latest People: Response time is less than 400ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Get Latest People: Test latest people data of response\", () => {\r",
+							"  pm.expect(jsonData).to.be.an(\"object\");\r",
+							"  pm.expect(jsonData).to.have.property(\"adult\");\r",
+							"  pm.expect(jsonData).to.have.property(\"also_known_as\");\r",
+							"  pm.expect(jsonData).to.have.property(\"biography\");\r",
+							"  pm.expect(jsonData).to.have.property(\"birthday\");\r",
+							"  pm.expect(jsonData).to.have.property(\"deathday\");\r",
+							"  pm.expect(jsonData).to.have.property(\"gender\");\r",
+							"  pm.expect(jsonData).to.have.property(\"homepage\");\r",
+							"  pm.expect(jsonData).to.have.property(\"id\");\r",
+							"  pm.expect(jsonData).to.have.property(\"imdb_id\");\r",
+							"  pm.expect(jsonData).to.have.property(\"known_for_department\");\r",
+							"  pm.expect(jsonData).to.have.property(\"name\");\r",
+							"  pm.expect(jsonData).to.have.property(\"place_of_birth\");\r",
+							"  pm.expect(jsonData).to.have.property(\"popularity\");\r",
+							"  pm.expect(jsonData).to.have.property(\"profile_path\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/people/latest/all",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"people",
+						"latest",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Movie Credits By PeopleId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Movie Credits By PeopleId: Status code is 200\",  ()=> {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Get Movie Credits By PeopleId: Content-Type is correct\", function () {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.contain('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Get Movie Credits By PeopleId: Response time is less than 400ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Get Movie Credits By PeopleId: Test movie credits data of response\", () => {\r",
+							"   pm.expect(jsonData).to.have.property(\"id\");\r",
+							"    pm.expect(jsonData.id).to.be.a(\"number\");\r",
+							"    pm.expect(jsonData).to.have.property(\"crew\");\r",
+							"    pm.expect(jsonData.crew).to.be.a(\"array\");\r",
+							"    pm.expect(jsonData).to.have.property(\"cast\");\r",
+							"    pm.expect(jsonData.cast).to.be.a(\"array\");\r",
+							"    const Cast = jsonData.crew[0]\r",
+							"    pm.expect(Cast).to.have.property(\"id\");\r",
+							"    pm.expect(Cast).to.have.property(\"title\");\r",
+							"    pm.expect(Cast).to.have.property(\"release_date\");\r",
+							"    pm.expect(Cast).to.have.property(\"original_title\");\r",
+							"    pm.expect(Cast).to.have.property(\"adult\");\r",
+							"    pm.expect(Cast).to.have.property(\"overview\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/people/{{peopleid}}/movie_credits",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"people",
+						"{{peopleid}}",
+						"movie_credits"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Movie Images",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Movie Images By movieid: Status code is 200\",  ()=> {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Get Movie Images By movieid: Content-Type is correct\", function () {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.contain('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Get Movie Images By movieid: Response time is less than 400ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Get Movie Images By movieid: Test movie images data of response\", () => {\r",
+							"   pm.expect(jsonData).to.have.property(\"backdrops\");\r",
+							"    pm.expect(jsonData.backdrops).to.be.a(\"array\");\r",
+							"\r",
+							"    const aImage = jsonData.backdrops[0]\r",
+							"    pm.expect(aImage).to.have.property(\"file_path\");\r",
+							"    pm.expect(aImage).to.have.property(\"height\");\r",
+							"    pm.expect(aImage).to.have.property(\"vote_average\");\r",
+							"    pm.expect(aImage).to.have.property(\"width\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/movies/{{movieid}}/movie_images",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"movies",
+						"{{movieid}}",
+						"movie_images"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Movie Reviews",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Movie Reviews By movieid: Status code is 200\",  ()=> {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Get Movie Reviews By movieid: Content-Type is correct\", function () {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.contain('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Get Movie Reviews By movieid: Response time is less than 400ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Get Movie Reviews By movieid: Test movie reviews data of response\", () => {\r",
+							"    pm.expect(jsonData).to.have.property(\"total_pages\");\r",
+							"    pm.expect(jsonData.total_pages).to.be.a(\"number\");\r",
+							"     pm.expect(jsonData).to.have.property(\"total_results\");\r",
+							"    pm.expect(jsonData.total_results).to.be.a(\"number\");\r",
+							"     pm.expect(jsonData).to.have.property(\"id\");\r",
+							"    pm.expect(jsonData.id).to.be.a(\"number\");\r",
+							"    pm.expect(jsonData).to.have.property(\"page\");\r",
+							"    pm.expect(jsonData.page).to.be.a(\"number\");\r",
+							"    pm.expect(jsonData).to.have.property(\"results\");\r",
+							"    pm.expect(jsonData.results).to.be.a(\"array\");\r",
+							"    const aResult = jsonData.results[0]\r",
+							"    pm.expect(aResult).to.have.property(\"author\");\r",
+							"    pm.expect(aResult).to.have.property(\"author_details\");\r",
+							"    pm.expect(aResult).to.have.property(\"content\");\r",
+							"    pm.expect(aResult).to.have.property(\"created_at\");\r",
+							"    pm.expect(aResult).to.have.property(\"id\");\r",
+							"    pm.expect(aResult).to.have.property(\"updated_at\");\r",
+							"    pm.expect(aResult).to.have.property(\"url\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/movies/{{movieid}}/movie_reviews",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"movies",
+						"{{movieid}}",
+						"movie_reviews"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Now Playing Movies",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" pm.test(\"Get Now Playing Movies: Successful Response\",()=>pm.response.to.have.status(200))\r",
+							" pm.test(\"Get Now Playing Movies: Content-Type is correct\", function () {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.contain('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Get Now Playing Movies: Response time is less than 400ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Get Now Playing Movies: Test now playing movie data of response\", () => {\r",
+							"  pm.expect(jsonData).to.be.an(\"object\");\r",
+							"  pm.expect(jsonData.page).to.be.a(\"number\");\r",
+							"  pm.expect(jsonData.results).to.be.an(\"array\").length.lessThan(21);\r",
+							"  aMovie=jsonData.results[0]\r",
+							"  pm.expect(aMovie).to.have.property(\"id\");\r",
+							"  pm.expect(aMovie).to.have.property(\"title\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/movies/now/playing?page=1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"movies",
+						"now",
+						"playing"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get People By PeopleId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"People By PeopleId: Status code is 200\",  ()=> {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"People By PeopleId: Content-Type is correct\", function () {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.contain('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"People By PeopleId: Response time is less than 400ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"People By PeopleId: Test people data of response\", () => {\r",
+							"   pm.expect(jsonData).to.be.to.be.an(\"object\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/people/{{peopleid}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"people",
+						"{{peopleid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Popular People",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"All Popular People: Status code is 200\",  ()=> {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"All Popular People: Content-Type is correct\", function () {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.contain('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"All Popular People: Response time is less than 400ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"All Popular People: Test people data of response\", () => {\r",
+							"   pm.expect(jsonData).to.be.to.be.an(\"object\");\r",
+							"   pm.expect(jsonData.results).to.be.to.be.an(\"array\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/people?page=1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"people"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Top Rated Movies",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" pm.test(\"Get Top Rated Movies: Successful Response\",()=>pm.response.to.have.status(200))\r",
+							" pm.test(\"Get Top Rated Movies: Content-Type is correct\", function () {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.contain('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Get Top Rated Movies: Response time is less than 400ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"GetTop Rated Movies: Test top rated movie data of response\", () => {\r",
+							"  pm.expect(jsonData).to.be.an(\"object\");\r",
+							"  pm.expect(jsonData.page).to.be.a(\"number\");\r",
+							"  pm.expect(jsonData.results).to.be.an(\"array\").length.lessThan(21);\r",
+							"  aMovie=jsonData.results[0]\r",
+							"  pm.expect(aMovie).to.have.property(\"id\");\r",
+							"  pm.expect(aMovie).to.have.property(\"title\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/movies/top/rated?page=1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"movies",
+						"top",
+						"rated"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Upcoming Movies",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" pm.test(\"Get Upcoming Movies: Successful Response\",()=>pm.response.to.have.status(200))\r",
+							" pm.test(\"Get Upcoming Movies: Content-Type is correct\", function () {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.contain('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Get Upcoming Movies: Response time is less than 400ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Get Upcoming Movies: Test upcoming movie data of response\", () => {\r",
+							"  pm.expect(jsonData).to.be.an(\"object\");\r",
+							"  pm.expect(jsonData.page).to.be.a(\"number\");\r",
+							"  pm.expect(jsonData.results).to.be.an(\"array\").length.lessThan(21);\r",
+							"  aMovie=jsonData.results[0]\r",
+							"  pm.expect(aMovie).to.have.property(\"id\");\r",
+							"  pm.expect(aMovie).to.have.property(\"title\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/movies/upcoming/all?page=1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"movies",
+						"upcoming",
+						"all"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Fantasy Movie",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" pm.test(\"Add Fantasy Movie: Successful Response\",()=>pm.response.to.have.status(201))\r",
+							"   const jsonData = pm.response.json();\r",
+							"    pm.test(\"Add Fantasy Movie: Response Object contains correct properties\",()=>{\r",
+							"    pm.expect(jsonData).to.have.property(\"id\");\r",
+							"    pm.expect(jsonData.id).to.be.a(\"string\");\r",
+							"    pm.expect(jsonData).to.have.property(\"name\");\r",
+							"    pm.expect(jsonData.name).to.be.a(\"string\");\r",
+							"    pm.expect(jsonData).to.have.property(\"genreId\");\r",
+							"    pm.expect(jsonData.genreId).to.be.a(\"number\");\r",
+							"    pm.expect(jsonData).to.have.property(\"runtime\");\r",
+							"    pm.expect(jsonData.runtime).to.be.a(\"number\");\r",
+							"    pm.expect(jsonData).to.have.property(\"overview\");\r",
+							"    pm.expect(jsonData.overview).to.be.a(\"string\");\r",
+							"    pm.expect(jsonData).to.have.property(\"releaseDt\");\r",
+							"    pm.expect(jsonData.releaseDt).to.be.a(\"string\");\r",
+							"    pm.expect(jsonData.actorIds).to.be.an(\"array\");\r",
+							"    })"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\":\"MyFantasyMovie\",\r\n \"genreId\": 12,\r\n \"runtime\":2.5,\r\n \"userId\": \"{{userid}}\",\r\n \"overview\" : \"This movie is suitable for kids\",\r\n \"releaseDt\":\"2022-06-28\",\r\n \"actorIds\":[ 1234, 1232, 1111 ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/movies/{{userid}}/fantasymovie",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"movies",
+						"{{userid}}",
+						"fantasymovie"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload Fantasy Movie Poster",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" pm.test(\"Upload Fantasy Movie Poster: Successful Response\",()=>pm.response.to.have.status(201))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "multipart/form-data",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "posterImage",
+							"type": "file",
+							"src": "Movie-Poster-Template-Dark-with-Image.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/api/movies/{{userid}}/fantasymovie/uploadposter",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"movies",
+						"{{userid}}",
+						"fantasymovie",
+						"uploadposter"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Fantasy Movie",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" pm.test(\"Get Fantasy Movie: Successful Response\",()=>pm.response.to.have.status(200))\r",
+							" pm.test(\"Get Fantasy Movie: Content-Type is correct\", function () {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.contain('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Get Fantasy Movie: Response time is less than 400ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Get Fantasy Movie: Test fantasy movie data of response\", () => {\r",
+							"  pm.expect(jsonData).to.be.an(\"object\");\r",
+							"  pm.expect(jsonData.id).to.be.a(\"string\");\r",
+							"  pm.expect(jsonData.name).to.be.a(\"string\");\r",
+							"  pm.expect(jsonData.genreId).to.be.a(\"string\");\r",
+							"  pm.expect(jsonData.runtime).to.be.a(\"number\");\r",
+							"  pm.expect(jsonData.overview).to.be.a(\"string\");\r",
+							"  pm.expect(jsonData.releaseDt).to.be.a(\"string\");\r",
+							"  pm.expect(jsonData.actorIds).to.be.an(\"array\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/movies/{{userid}}/fantasymovie",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"movies",
+						"{{userid}}",
+						"fantasymovie"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Fantasy Movie",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" pm.test(\"Add Fantasy Movie: Successful Response\",()=>pm.response.to.have.status(204))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\":\"MyFantasyMovie\",\r\n \"genreId\": 12,\r\n \"runtime\":2.5,\r\n \"userId\": \"626976f34f18b924b86fcdbc\",\r\n \"overview\" : \"This movie is suitable for kids\",\r\n \"releaseDt\":\"2022-06-28\",\r\n \"actorIds\":[ 1234, 1232, 1111 ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/movies/{{userid}}/fantasymovie",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"movies",
+						"{{userid}}",
+						"fantasymovie"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Fantasy Movie",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" pm.test(\"Add Fantasy Movie: Successful Response\",()=>pm.response.to.have.status(204))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\":\"MyFantasyMovie\",\r\n \"genreId\": 12,\r\n \"runtime\":2.5,\r\n \"userId\": \"626976f34f18b924b86fcdbc\",\r\n \"overview\" : \"This movie is suitable for kids\",\r\n \"releaseDt\":\"2022-06-28\",\r\n \"actorIds\":[ 1234, 1232, 1111 ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/movies/{{userid}}/fantasymovie",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"movies",
+						"{{userid}}",
+						"fantasymovie"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search Movies",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" pm.test(\"Search Movies: Successful Response\",()=>pm.response.to.have.status(200))\r",
+							" pm.test(\"Search Movies: Content-Type is correct\", function () {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.contain('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Search Movies: Response time is less than 400ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Search Movies: Test movie data of response\", () => {\r",
+							"  pm.expect(jsonData).to.be.an(\"object\");\r",
+							"  pm.expect(jsonData.page).to.be.a(\"number\");\r",
+							"  pm.expect(jsonData.results).to.be.an(\"array\").length.lessThan(21);\r",
+							"  aMovie=jsonData.results[0]\r",
+							"  pm.expect(aMovie).to.have.property(\"id\");\r",
+							"  pm.expect(aMovie).to.have.property(\"title\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/movies?page=1&with_genres=28&language=xx&with_cast=1907997&include_adult=true",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"movies"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "with_genres",
+							"value": "28"
+						},
+						{
+							"key": "language",
+							"value": "xx"
+						},
+						{
+							"key": "with_cast",
+							"value": "1907997"
+						},
+						{
+							"key": "include_adult",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "firstName",
+			"value": "John",
+			"type": "string"
+		},
+		{
+			"key": "lastName",
+			"value": "Doe",
+			"type": "string"
+		},
+		{
+			"key": "email",
+			"value": "john@doe.ie",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "test123@",
+			"type": "string"
+		},
+		{
+			"key": "authToken",
+			"value": ""
+		},
+		{
+			"key": "userid",
+			"value": ""
+		},
+		{
+			"key": "favoritemovie",
+			"value": ""
+		},
+		{
+			"key": "peopleid",
+			"value": "3545013",
+			"type": "string"
+		},
+		{
+			"key": "movieid",
+			"value": "675353",
+			"type": "string"
+		}
+	]
+}
