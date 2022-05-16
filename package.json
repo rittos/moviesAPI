@@ -4,7 +4,7 @@
   "description": "movies app api's",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "newman run ./tests/movies_collection.json -e ./tests/movies_environment.json --reporters htmlextra,cli --reporter-htmlextra-export ./tests/reports/report.html",
     "start": "nodemon --exec babel-node index.js"
   },
   "repository": {
