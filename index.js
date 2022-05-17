@@ -13,7 +13,9 @@ import fantasyMovieSchema from './src/movies/validators';
 import createPeoplesRouter from './src/peoples/routes';
 import cors from 'cors';
 import expressLogging  from 'express-logging';
-import logger  from 'logops';
+// import logger  from 'logops';
+import bunyanAzure from 'bunyan-azure';
+import bunyan from 'bunyan';
 
 dotenv.config();
 
@@ -31,6 +33,35 @@ const dependencies = {
   moviesValidator: fantasyMovieSchema
 };
 
+var logger = bunyan.createLogger({
+  name: "moviesAPILogger",                     // logger name
+  serializers: {
+      req: bunyan.stdSerializers.req,     // standard bunyan req serializer
+      err: bunyan.stdSerializers.err      // standard bunyan error serializer
+  },
+  streams: [
+      {
+          level: 'info',                  // loging level
+          stream: process.stdout          // log INFO and above to stdout
+      },
+      {
+        level: 'error',
+        path: __dirname + '/logs/moviesAPI.log'  // log ERROR and above to a file
+      },
+      {
+        level: 'error',
+        stream: new bunyanAzure.AzureStream({
+          account: process.env.AZURE_STORAGE_ACCOUNT_NAME,
+          access_key: process.env.AZURE_STORAGE_ACCESS_KEY,
+          table: process.env.AZURE_STORAGE_TABLE_NAME
+        })
+      }
+
+  ]
+});
+
+logger.info({ message: "Application startup" });
+
 app.use(cors());
 // express logging middlewear
 if(process.env.NODE_ENV === "development")
@@ -41,9 +72,18 @@ app.use(expressLogging(logger));
 app.use(express.json());
 app.get('/', (req, res) => { res.end('All Good!'); });
 
-app.use('/api/accounts', createAccountsRouter(dependencies));
-app.use('/api/movies', createMoviesRouter(dependencies));
-app.use('/api/people', createPeoplesRouter(dependencies));
+app.use('/api/accounts',function (req, res, next) {
+  req.log = logger;
+  next();
+}, createAccountsRouter(dependencies));
+app.use('/api/movies',function (req, res, next) {
+  req.log = logger;
+  next();
+}, createMoviesRouter(dependencies));
+app.use('/api/people',function (req, res, next) {
+  req.log = logger;
+  next();
+}, createPeoplesRouter(dependencies));
 app.use(errorHandler);
 app.listen(port, () => {
   console.info(`Server running at ${port}`);

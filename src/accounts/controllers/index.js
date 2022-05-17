@@ -4,6 +4,7 @@ import logger  from 'logops';
 export default (dependencies) => {
 
     const createAccount = async (request, response, next) => {
+        try{
         // Input
         const { firstName, lastName, email, password } = request.body;
         // Treatment
@@ -11,8 +12,12 @@ export default (dependencies) => {
         //const output = dependencies.accountsSerializer.serialize(account);
         //output
         response.status(201).json(account)
+        }catch(err){
+            next(new Error(`Create account ${err.message}`));
+        }
     };
     const getAccount = async (request, response, next) => {
+        try{
         //input
         const accountId = request.params.id;
         // Treatment
@@ -20,12 +25,19 @@ export default (dependencies) => {
         // const output = dependencies.accountsSerializer.serialize(account);
         //output
         response.status(200).json(account);
+        }catch(err){
+            next(new Error(`Fetch account ${err.message}`));
+        }
     };
     const listAccounts = async (request, response, next) => {
+        try{
         // Treatment
         const accounts = await accountService.find(dependencies);
         //output
         response.status(200).json(accounts);
+        }catch(err){
+            next(new Error(`Fetch all account ${err.message}`));
+        }
     };
 
     const authenticateAccount = async (request, response, next) => {
@@ -36,7 +48,7 @@ export default (dependencies) => {
             const token = await accountService.authenticate(email, password, dependencies);
             response.status(200).json({ token: `BEARER ${token}` });
         } catch (error) {
-            logger.warn("Unauthorised");
+            request.log.error("Unauthorised");
             response.status(401).json({ message: 'Unauthorised' });
         }
     };
@@ -87,6 +99,7 @@ export default (dependencies) => {
     };
 
     const findByEmail = async (request, response, next) => {
+        try{
         //input
         const emailId = request.params.id;
         // Treatment
@@ -94,6 +107,9 @@ export default (dependencies) => {
         // const output = dependencies.accountsSerializer.serialize(account);
         //output
         response.status(200).json(account);
+        }catch(err){
+            next(new Error(`find by email ${err.message}`));
+        }
     };
 
 

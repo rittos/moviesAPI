@@ -19,7 +19,7 @@ const createMoviesRouter = (dependencies) => {
         .get(moviesController.find);
 
     router.route('/:id/fantasymovie/uploadposter')
-        .post(accountsController.verifyToken,Upload.single('posterImage'),moviesController.uploadPoster);
+        .post(Upload.single('posterImage'),moviesController.uploadPoster);
 
     router.route('/:id/fantasymovie')
         .post(moviesValidator.validateFantasyMovie, accountsController.verifyToken,moviesController.addFantasyMovie);

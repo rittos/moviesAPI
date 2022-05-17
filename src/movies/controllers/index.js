@@ -19,6 +19,7 @@ import path from 'path';
       const find = async (request, response, next) => {
         try {
           //input
+          // request.log("test success controller log!");
           const query = request.query;
           // Treatment
           const accounts = await moviesService.find(query, dependencies);

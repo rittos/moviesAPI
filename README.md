@@ -118,6 +118,7 @@ export const addFantasyMovie = (userId, name, genreId, runtime, overview, releas
 - joi validation added for fantasymovie including regular expression validation for date format.
 - Poster image file uplaod using multer miidlewear.
 - Delete API implementation using "post" action verb for deleting favorites and using action verb "delete" for fantasy movie deletion.
+- Integration Testing using postman test cases.
 
 ## Independent learning.
 
