@@ -13,7 +13,6 @@ import fantasyMovieSchema from './src/movies/validators';
 import createPeoplesRouter from './src/peoples/routes';
 import cors from 'cors';
 import expressLogging  from 'express-logging';
-// import logger  from 'logops';
 import bunyanAzure from 'bunyan-azure';
 import bunyan from 'bunyan';
 
@@ -41,22 +40,21 @@ var logger = bunyan.createLogger({
   },
   streams: [
       {
-          level: 'info',                  // loging level
+          level: process.env.CONSOLE_ERROR_LOG_LEVEL,                  // loging level
           stream: process.stdout          // log INFO and above to stdout
       },
       {
-        level: 'error',
+        level: process.env.File_ERROR_LOG_LEVEL,
         path: __dirname + '/logs/moviesAPI.log'  // log ERROR and above to a file
       },
       {
-        level: 'error',
+        level: process.env.AZURE_ERROR_LOG_LEVEL,
         stream: new bunyanAzure.AzureStream({
           account: process.env.AZURE_STORAGE_ACCOUNT_NAME,
           access_key: process.env.AZURE_STORAGE_ACCESS_KEY,
           table: process.env.AZURE_STORAGE_TABLE_NAME
         })
       }
-
   ]
 });
 
