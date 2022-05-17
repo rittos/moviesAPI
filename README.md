@@ -28,20 +28,39 @@ npm install
 - This should create and start the Mongodb service on your local host.
 
 ## API Configuration
-Describe any configuration that needs to take place before running the API. For example, creating an ``.env`` and what variables to put in it. Give an example of how this might be structured/done.
+
+Create a .env file in the root folder and replace below configuration with correponding values.
+
+- Provide mongo db url for DATABASE_URL.
+- Provide TMDB API Access key for TMDB_KEY
+- Provide Authentcation secret encryption/decryption key for JWT_SECRET_KEY
+- Provide API host name for HOST
+- Provide API hosting port for PORT
+- Provide environment name for NODE_ENV
+- Provide azure storage account name for AZURE_STORAGE_ACCOUNT_NAME
+- Provide azure storage access key for AZURE_STORAGE_ACCESS_KEY
+- Provide azure storage table name for AZURE_STORAGE_TABLE_NAME
+- Errors are logged into console, local storage file and azure storage as well.Implemented error log levels are given below.
+> error : Only log request and response details along with error when error occured.
+> info  : Log complete info including each request and response.
 
 ```bat
 NODE_ENV=development
 PORT=8080
-HOST=
+HOST=localhost
 TMDB_KEY=
 DATABASE_URL=
 DATABASE_DIALECT=mongo
 JWT_SECRET_KEY=
+AZURE_STORAGE_ACCOUNT_NAME=
+AZURE_STORAGE_ACCESS_KEY=
+AZURE_STORAGE_TABLE_NAME=
+AZURE_ERROR_LOG_LEVEL = error
+File_ERROR_LOG_LEVEL = error
+CONSOLE_ERROR_LOG_LEVEL = info
 ```
 
 ## Start-up
-Describe how to start/stop the API. You could go though the ``scripts:`` property of the *package.json* file.
 
 - To start the API type below command in terminal.
 
@@ -55,7 +74,6 @@ npm start
 
 [SwaggerHub Doc](https://app.swaggerhub.com/apis-docs/rittos/movies-api/1.0.0)
 
-
 ## Security and Authentication
 
 - json web token (jwt) based authentication 
@@ -67,18 +85,19 @@ npm start
 
 Protected Routes :
 
-| PATH                                 | GET                       | POST                          | PUT                      | DELETE                 |
-| ------------------------------------ | ------------------------- | ----------------------------- | ------------------------ | ---------------------- |
-| /api/accounts/email/{email}          | Fetch account by email    | N/A                           | N/A                      | N/A                    |
-| /api/movies/{movieid}/movie_reviews  | Get Movie Reviews         | N/A                           | N/A                      | N/A                    |
-| /api/accounts/{userid}/favourites    | Get favourites by userid  | Add new favorite movie        | N/A                      | N/A                    |
-| /api/movies/{movieid}/movie_images   | Fetch movie images        | N/A                           | N/A                      | N/A                    |
-| /api/people/{peopleid}/movie_credits | Fetch movie credits       | N/A                           | N/A                      | N/A                    |
-| /api/people/{peopleid}               | Fetch people details      | N/A                           | N/A                      | N/A                    |
-| /api/movies/{userid}/fantasymovie    | Fetch fantasy movie       | Add a fantasy movie           | Update fantasy movie     | Delete fantasy movie   |
-| /api/movies/{movieid}                | Fetch movie details       | N/A                           | N/A                      | N/A                    |
-| /api/accounts/{userid}               | Fetch an account by userid| N/A                           | N/A                      | N/A                    |
-| /api/accounts/deleteFavourite        | N/A                       | Delete a favorite movie       | N/A                      | N/A                    |
+| PATH                                           | GET                       | POST                          | PUT                      | DELETE                 |
+| -----------------------------------------------| ------------------------- | ----------------------------- | ------------------------ | ---------------------- |
+| /api/accounts/email/{email}                    | Fetch account by email    | N/A                           | N/A                      | N/A                    |
+| /api/movies/{movieid}/movie_reviews            | Get Movie Reviews         | N/A                           | N/A                      | N/A                    |
+| /api/accounts/{userid}/favourites              | Get favourites by userid  | Add new favorite movie        | N/A                      | N/A                    |
+| /api/movies/{movieid}/movie_images             | Fetch movie images        | N/A                           | N/A                      | N/A                    |
+| /api/people/{peopleid}/movie_credits           | Fetch movie credits       | N/A                           | N/A                      | N/A                    |
+| /api/people/{peopleid}                         | Fetch people details      | N/A                           | N/A                      | N/A                    |
+| /api/movies/{userid}/fantasymovie              | Fetch fantasy movie       | Add a fantasy movie           | Update fantasy movie     | Delete fantasy movie   |
+| /api/movies/{movieid}                          | Fetch movie details       | N/A                           | N/A                      | N/A                    |
+| /api/accounts/{userid}                         | Fetch an account by userid| N/A                           | N/A                      | N/A                    |
+| /api/accounts/deleteFavourite                  | N/A                       | Delete a favorite movie       | N/A                      | N/A                    |
+| /api/movies/{userid}/fantasymovie/uploadposter | N/A                       | upload fantasy movie poster   | N/A                      | N/A                    |
 
 
 ### Design
@@ -92,6 +111,7 @@ Protected Routes :
 ## Integrating with React App
 
 - Authorization header used to send JWT Bearer token on protected API calls.
+- Host Server Base url provided as environment configuration in react app API_BASE_URL
 
 - React App git hub link : https://github.com/rittos/moviesApp
 
@@ -113,15 +133,17 @@ export const addFantasyMovie = (userId, name, genreId, runtime, overview, releas
 
 - User Registration implemented using email & password.
 - Authentication to API is implemented using JWT Token and added custom middlewear to validate the token passed on protected routes.
-- Used express-logging middlewear for better logging of requests and responses (https://www.npmjs.com/package/express-logging)
+- Used 3rd party bunyan middlewear for better logging of info or error based on cofiguration in console, local storage file (https://www.npmjs.com/package/bunyan)
+- Used 3rd party bunyan-azure package for logging info error based on configuration in azure storage portal (https://npm.io/package/bunyan-azure)
 - Used multer middlewear for handling multipart/form-data for poster image upload (https://www.npmjs.com/package/multer)
 - joi validation added for fantasymovie including regular expression validation for date format.
 - Poster image file uplaod using multer miidlewear.
 - Delete API implementation using "post" action verb for deleting favorites and using action verb "delete" for fantasy movie deletion.
+- Integration Testing using postman test cases.
 
 ## Independent learning.
 
-- azure hosting of React App & Nodejs API
+- azure hosting and logging of React App & Nodejs API
 - Swagger Documentation
 - git hub develop and release branches, tags and releases.
 

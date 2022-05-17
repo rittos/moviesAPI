@@ -7,6 +7,7 @@ import logger  from 'logops';export default
         return res.status(301).redirect('/not-found');
     }
     logger.error(error.message.toString());
+    req.log.error(error.message.toString());
     return res
         .status(error.statusCode)
         .json({ error: error.toString() });
