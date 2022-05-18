@@ -4,11 +4,9 @@ Name: Ritto Poovathingal Thimothy
 
 ## Overview
 
-> APIs for interacting with tmdb endpoints, account creation, authentication, favorites feature & fantasy movie creation
+> APIs for interacting with tmdb endpoints, account creation, authentication, favorites feature & fantasy movie feature
 
 ## Installation Requirements
-
-Describe what needs to be on the machine to run the API (Node v?, NPM, MongoDB instance, any other 3rd party software not in the package.json). 
 
 - Download and install Node.js by selecting the relevant installer for your OS:
 - Download link : https://nodejs.org/dist/v14.17.6/
@@ -17,8 +15,8 @@ Clone API repository from Git Hub.
 ```bat
 git clone https://github.com/rittos/moviesAPI.git
 ```
-- Navigate to cloned repository using terminal and run below command to install all required dependancies.
 
+- Navigate to cloned repository using terminal and run below command to install all required dependancies.
 ```bat
 npm install
 ```
@@ -40,9 +38,9 @@ Create a .env file in the root folder and replace below configuration with corre
 - Provide azure storage account name for AZURE_STORAGE_ACCOUNT_NAME
 - Provide azure storage access key for AZURE_STORAGE_ACCESS_KEY
 - Provide azure storage table name for AZURE_STORAGE_TABLE_NAME
-- Errors are logged into console, local storage file and azure storage as well.Implemented error log levels are given below.
-> error : Only log request and response details along with error when error occured.
-> info  : Log complete info including each request and response.
+- Errors are logged into console, local storage file and azure storage as well.Implemented error log levels are given below.  
+error : Only log request and response details along with error when error occured.  
+info  : Log complete info including each request and response.  
 
 ```bat
 NODE_ENV=development
@@ -62,7 +60,7 @@ CONSOLE_ERROR_LOG_LEVEL = info
 
 ## Start-up
 
-- To start the API type below command in terminal.
+- To start the API navigate to root folder type below command in terminal.
 
 ```bat
 npm start
@@ -76,9 +74,9 @@ npm start
 
 ## Security and Authentication
 
-- json web token (jwt) based authentication 
-- When user login using emailid and password, security token api verifies the useremail and password with the data stored in mongo db.
-- If an account with same username and password exist, it returns a json token back.
+- implemented json web token (jwt) based authentication 
+- When user login using emailid and password, security token api verifies the user email and password with the data stored in the mongo db.
+- If an account with same username and password exist in database, it uses a secret key (JWT_SECRET_KEY) from .env for encryption and decryption and returns a json token back.
 - This json token is stored in browser local storage of user.
 - The same token is used for authenticating subsequent request made by the same user.
 - json token is passed along with each request with Authorization header which is then verified using verify token middlewear at the api side.
@@ -103,16 +101,15 @@ Protected Routes :
 ### Design
 
 - movie API uses mongoDB for persistence. There are 2 collections namely accounts and fantasymovies.
-- Nested document structure implemented for fantasymovies collection. posterimage is another document embedded inside fantasymovies document.
+- Nested document structure implemented for fantasymovies collection. Posterimage is another document embedded inside fantasymovies document.
 - Seperate folder structure with new controller, services routes implemented for people related apis.
-- Added new utils for uploading poster image to server.
+- Added new utils component for uploading poster image to server.
 - joi validation added for fantasymovie including regular expression validation for date format.
 
 ## Integrating with React App
 
 - Authorization header used to send JWT Bearer token on protected API calls.
 - Host Server Base url provided as environment configuration in react app API_BASE_URL
-
 - React App git hub link : https://github.com/rittos/moviesApp
 
 ~~~Javascript
@@ -132,19 +129,22 @@ export const addFantasyMovie = (userId, name, genreId, runtime, overview, releas
 ## Extra features
 
 - User Registration implemented using email & password.
-- Authentication to API is implemented using JWT Token and added custom middlewear to validate the token passed on protected routes.
-- Used 3rd party bunyan middlewear for better logging of info or error based on cofiguration in console, local storage file (https://www.npmjs.com/package/bunyan)
+- Authentication to API is implemented using JWT Token and added validation of the token passed on protected routes.
+- Used 3rd party package bunyan for better logging of info or error based on cofiguration in console, local storage file (https://www.npmjs.com/package/bunyan)
 - Used 3rd party bunyan-azure package for logging info error based on configuration in azure storage portal (https://npm.io/package/bunyan-azure)
-- Used multer middlewear for handling multipart/form-data for poster image upload (https://www.npmjs.com/package/multer)
+- Used multer package for handling multipart/form-data for poster image upload (https://www.npmjs.com/package/multer)
 - joi validation added for fantasymovie including regular expression validation for date format.
 - Poster image file uplaod using multer miidlewear.
 - Delete API implementation using "post" action verb for deleting favorites and using action verb "delete" for fantasy movie deletion.
 - Integration Testing using postman test cases.
+- Newman Automation report generated and committed to git hub (https://github.com/rittos/moviesAPI/blob/master/tests/reports/report.html)
 
 ## Independent learning.
 
-- azure hosting and logging of React App & Nodejs API
-- Swagger Documentation
+- azure hosting and logging of React App (https://web-development-moviesapp.azurewebsites.net) & Nodejs API (https://web-development-moviesapi.azurewebsites.net)
+- error logging to azure storage tables and local storage files.
+- Swagger Documentation and published in swagger hub. All api can be accessed from swagger documentation.
 - git hub develop and release branches, tags and releases.
+- cors package added and used for allowing calls to API from different host.
 
  
